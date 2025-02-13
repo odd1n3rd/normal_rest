@@ -41,6 +41,6 @@ func (r *userRepos) DeleteByID(id uint) error {
 
 func (r *userRepos) GetAll() ([]entity.User, error) {
 	var users []entity.User
-	err := r.db.Find(&users).Error
+	err := r.db.Preload("Orders").Find(&users).Error
 	return users, err
 }
