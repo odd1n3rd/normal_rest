@@ -9,7 +9,7 @@ type OrderRepos interface {
 	Create(order *entity.Order) error
 	GetByID(id uint) (*entity.Order, error)
 	GetAll() ([]entity.Order, error)
-	Update(order *entity.Order) error
+	UpdateByID(order *entity.Order, id int) error
 	DeleteByID(id uint) error
 }
 
@@ -31,8 +31,17 @@ func (r *orderRepos) GetByID(id uint) (*entity.Order, error) {
 	return &order, err
 }
 
-func (r *orderRepos) Update(order *entity.Order) error {
-	return r.db.Save(order).Error
+func (r *orderRepos) UpdateByID(order *entity.Order, id int) error {
+	// var updatedOrd entity.Order
+	// r.db.First(&updatedOrd, id)
+	// updatedOrd.ProductName = order.ProductName
+	// updatedOrd.Amount = order.Amount
+	// updatedOrd.Cost = order.Cost
+	return r.db.Model(&entity.Order{}).Where("id = ?", id).Save(&entity.Order{ProductName: order.ProductName,
+		Cost:   order.Cost,
+		Amount: order.Amount,
+		UserID: order.UserID,
+	}).Error
 }
 
 func (r *orderRepos) DeleteByID(id uint) error {

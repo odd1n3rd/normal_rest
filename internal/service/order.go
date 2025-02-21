@@ -29,8 +29,8 @@ func (s *orderService) CreateOrder(order *entity.Order) error {
 	return s.repos.Create(order)
 }
 
-func (s *orderService) UpdateOrderInfo(order *entity.Order) error {
-	return s.repos.Update(order)
+func (s *orderService) UpdateOrderInfo(order *entity.Order, id int) error {
+	return s.repos.UpdateByID(order, id)
 }
 
 func (s *orderService) DeleteOrder(id uint) error {

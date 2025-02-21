@@ -9,12 +9,16 @@ type UserService interface {
 	GetAllUsers() ([]entity.User, error)
 	GetUserByID(id uint) (*entity.User, error)
 	CreateUser(user *entity.User) error
-	UpdateUserInfo(user *entity.User) error
+	UpdateUserInfo(user *entity.User, id int) error
 	DeleteUser(id uint) error
 }
 
 type userService struct {
 	repos repository.UserRepos
+}
+
+func NewUserService(r repository.UserRepos) UserService {
+	return &userService{repos: r}
 }
 
 func (s *userService) GetAllUsers() ([]entity.User, error) {
@@ -29,8 +33,8 @@ func (s *userService) CreateUser(user *entity.User) error {
 	return s.repos.Create(user)
 }
 
-func (s *userService) UpdateUserInfo(user *entity.User) error {
-	return s.repos.Update(user)
+func (s *userService) UpdateUserInfo(user *entity.User, id int) error {
+	return s.repos.UpdateByID(user, id)
 }
 
 func (s *userService) DeleteUser(id uint) error {

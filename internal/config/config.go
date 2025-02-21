@@ -2,7 +2,6 @@ package config
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/sethvargo/go-envconfig"
 )
@@ -15,6 +14,6 @@ type Config struct {
 func Load() *Config {
 	var cfg Config
 	envconfig.MustProcess(context.Background(), &cfg)
-	fmt.Println(cfg)
+	//fmt.Println(cfg)
 	return &cfg
 }

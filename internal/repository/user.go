@@ -9,7 +9,7 @@ type UserRepos interface {
 	Create(user *entity.User) error
 	GetByID(id uint) (*entity.User, error)
 	GetAll() ([]entity.User, error)
-	Update(user *entity.User) error
+	UpdateByID(user *entity.User, ID int) error
 	DeleteByID(id uint) error
 }
 
@@ -22,7 +22,7 @@ func NewUserRepos(db *gorm.DB) UserRepos {
 }
 
 func (r *userRepos) Create(user *entity.User) error {
-	return r.db.Create(user).Error
+	return r.db.Preload("orders").Create(user).Error
 }
 
 func (r *userRepos) GetByID(id uint) (*entity.User, error) {
@@ -31,8 +31,21 @@ func (r *userRepos) GetByID(id uint) (*entity.User, error) {
 	return &user, err
 }
 
-func (r *userRepos) Update(user *entity.User) error {
-	return r.db.Save(user).Error
+func (r *userRepos) UpdateByID(user *entity.User, ID int) error {
+	// var updatedUser entity.User
+	// if err := r.db.First(&updatedUser, ID); err != nil {
+	// 	return err.Error
+	// }
+
+	// updatedUser.Email = user.Email
+	// updatedUser.Name = user.Name
+	if err := r.db.Model(&user).Where("id=?", ID).Updates(map[string]any{
+		"Name":  user.Name,
+		"Email": user.Email,
+	}).Error; err != nil {
+		return err
+	}
+	return nil
 }
 
 func (r *userRepos) DeleteByID(id uint) error {
