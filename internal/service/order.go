@@ -9,12 +9,17 @@ type OrderService interface {
 	GetAllOrders() ([]entity.Order, error)
 	GetOrderByID(id uint) (*entity.Order, error)
 	CreateOrder(order *entity.Order) error
-	UpdateOrderInfo(order *entity.Order) error
+	UpdateOrderInfo(order *entity.Order, id int) error
 	DeleteOrder(id uint) error
+	GetAllUserOrders(id uint) ([]entity.Order, error)
 }
 
 type orderService struct {
 	repos repository.OrderRepos
+}
+
+func NewOrderService(r repository.OrderRepos) OrderService {
+	return &orderService{repos: r}
 }
 
 func (s *orderService) GetAllOrders() ([]entity.Order, error) {
@@ -23,6 +28,10 @@ func (s *orderService) GetAllOrders() ([]entity.Order, error) {
 
 func (s *orderService) GetOrderByID(id uint) (*entity.Order, error) {
 	return s.repos.GetByID(id)
+}
+
+func (s *orderService) GetAllUserOrders(id uint) ([]entity.Order, error) {
+	return s.repos.GetAllByUserId(id)
 }
 
 func (s *orderService) CreateOrder(order *entity.Order) error {

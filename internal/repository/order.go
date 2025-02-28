@@ -11,6 +11,7 @@ type OrderRepos interface {
 	GetAll() ([]entity.Order, error)
 	UpdateByID(order *entity.Order, id int) error
 	DeleteByID(id uint) error
+	GetAllByUserId(id uint) ([]entity.Order, error)
 }
 
 type orderRepos struct {
@@ -51,5 +52,11 @@ func (r *orderRepos) DeleteByID(id uint) error {
 func (r *orderRepos) GetAll() ([]entity.Order, error) {
 	var orders []entity.Order
 	err := r.db.Find(&orders).Error
+	return orders, err
+}
+
+func (r *orderRepos) GetAllByUserId(id uint) ([]entity.Order, error) {
+	var orders []entity.Order
+	err := r.db.Where("user_id = ?", id).Find(&orders).Error
 	return orders, err
 }

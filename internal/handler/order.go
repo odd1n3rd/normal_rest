@@ -48,6 +48,23 @@ func (h *OrderHandler) GetOrders(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, orders)
 }
 
+func (h *OrderHandler) GetOrdersByUserId(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(chi.URLParam(r, "id"))
+	if err != nil {
+		render.Status(r, http.StatusBadRequest)
+		render.JSON(w, r, map[string]string{"error": err.Error()})
+		return
+	}
+
+	var orders []entity.Order
+	orders, err = h.service.GetAllUserOrders(uint(id))
+	if err != nil {
+		render.Status(r, http.StatusInternalServerError)
+		render.JSON(w, r, map[string]string{"error": err.Error()})
+		return
+	}
+	render.JSON(w, r, orders)
+}
 func (h *OrderHandler) GetOrder(w http.ResponseWriter, r *http.Request) {
 
 	id, err := strconv.Atoi(chi.URLParam(r, "id"))

@@ -1,19 +1,26 @@
 package config
 
 import (
-	"context"
+	"log"
+	"os"
 
-	"github.com/sethvargo/go-envconfig"
+	"github.com/joho/godotenv"
 )
 
 type Config struct {
-	ServerAddress string `env:"SERVER_ADDRESS" env-default:":12345"`
-	DBAddr        string `env:"DB_ADDR"`
+	ServerAddress string
+	DBAddr        string
 }
 
 func Load() *Config {
 	var cfg Config
-	envconfig.MustProcess(context.Background(), &cfg)
-	//fmt.Println(cfg)
+	// envconfig.MustProcess(context.Background(), &cfg)
+
+	if err := godotenv.Load(); err != nil {
+		log.Fatal(map[string]string{"environment error": err.Error()})
+	}
+	cfg.ServerAddress = os.Getenv("SERVER_ADDRESS")
+	cfg.DBAddr = os.Getenv("DB_DSN")
+	// fmt.Println(cfg)
 	return &cfg
 }
